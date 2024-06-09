@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Content List</title>
+</head>
+<body>
+<h1>Content List</h1>
+<div id="content-list">
+    <!-- Contents will be dynamically inserted here -->
+</div>
+<button onclick="location.href='/'">Back to Home</button>
+<script>
+    fetch('/content/list')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data); // 서버에서 가져온 데이터를 로그에 출력
+            const contentList = document.getElementById('content-list');
+            data.forEach(content => {
+                const contentDiv = document.createElement('div');
+                const images = content.images.map(img => `<img src="data:image/png;base64,${img.imageUrl}" alt="Content Image">`).join('');
+                contentDiv.innerHTML = `<h2>${content.title}</h2>
+                                        <p>${content.description}</p>
+                                        ${images}
+                                        <button onclick="location.href='/content/update/${content.id}'">Update</button>
+                                        <button onclick="deleteContent(${content.id})">Delete</button>`;
+                contentList.appendChild(contentDiv);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching content list:', error);
+        });
+
+    function deleteContent(contentId) {
+        fetch(`/content/delete?contentId=${contentId}`, { method: 'DELETE' })
+            .then(() => location.reload())
+            .catch(error => {
+                console.error('Error deleting content:', error);
+            });
+    }
+</script>
+</body>
+</html>
