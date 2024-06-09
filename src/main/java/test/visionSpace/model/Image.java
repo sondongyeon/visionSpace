@@ -12,11 +12,12 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imageId;
+    private Long id;
+
+    @Lob
+    private byte[] data;
 
     @ManyToOne
     @JoinColumn(name = "content_id")
     private Content content;
-
-    private String imageUrl;  // 이미지의 경로 또는 URL
 }

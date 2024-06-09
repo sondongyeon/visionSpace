@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Update Content</title>
+</head>
+<body>
+<h1>Update Content</h1>
+<form action="/content/update" method="post">
+    <input type="hidden" id="contentId" name="contentId" th:value="${content.contentId}">
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" th:value="${content.title}" required><br><br>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" maxlength="500" required th:text="${content.description}"></textarea><br><br>
+
+    <label for="images">Images:</label>
+    <input type="file" id="images" name="images" multiple accept="image/*"><br><br>
+
+    <button type="submit">Update</button>
+</form>
+</body>
+</html>

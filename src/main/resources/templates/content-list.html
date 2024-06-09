@@ -9,42 +9,20 @@
 <body>
 <h1>Content List</h1>
 <div id="content-list">
-    <!-- Contents will be dynamically inserted here -->
+    <ul>
+        <li th:each="content : ${contents}">
+            <h2 th:text="${content.title}">Title</h2>
+            <p th:text="${content.description}">Description</p>
+            <div>
+                <th:block th:each="image, iter : ${content.images}" th:if="${iter.index} &lt; 5">
+                    <img th:src="${image.imageUrl}" alt="Content Image">
+                </th:block>
+            </div>
+            <a th:href="@{/content/update/{id}(id=${content.contentId})}"><button>Update</button></a>
+            <a th:href="@{/content/delete(id=${content.contentId})}"><button>Delete</button></a>
+        </li>
+    </ul>
 </div>
-<button onclick="location.href='/'">Back to Home</button>
-<script>
-    fetch('/content/list')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data); // 서버에서 가져온 데이터를 로그에 출력
-            const contentList = document.getElementById('content-list');
-            data.forEach(content => {
-                const contentDiv = document.createElement('div');
-                const images = content.images.map(img => `<img src="data:image/png;base64,${img.imageUrl}" alt="Content Image">`).join('');
-                contentDiv.innerHTML = `<h2>${content.title}</h2>
-                                        <p>${content.description}</p>
-                                        ${images}
-                                        <button onclick="location.href='/content/update/${content.id}'">Update</button>
-                                        <button onclick="deleteContent(${content.id})">Delete</button>`;
-                contentList.appendChild(contentDiv);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching content list:', error);
-        });
-
-    function deleteContent(contentId) {
-        fetch(`/content/delete?contentId=${contentId}`, { method: 'DELETE' })
-            .then(() => location.reload())
-            .catch(error => {
-                console.error('Error deleting content:', error);
-            });
-    }
-</script>
+<a href="/">Back to Home</a>
 </body>
 </html>
